@@ -5,7 +5,7 @@ import coin
     
 class portfolio:
         def __init__(self):
-            self.valuation = float(100,000)
+            self.valuation = float(100000)
             self.coinPurse = float(0)
         
         def buy(self):

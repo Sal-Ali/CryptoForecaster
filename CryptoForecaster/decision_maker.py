@@ -41,7 +41,7 @@ def backtest(dataset): #7 values
             row[6] = 1 if row[6] == 2 else 2
             mistakes += 1
         new_set.append[row]
-        if i + 1 = len(dataset):
+        if i + 1 == len(dataset):
             new_set.append[row]
     print('Error for this epoch: ' + (mistakes / float(len(dataset))) + 'improving model....')
     df = pd.DataFrame(new_set, columns=['date','price','arima','rsi','high','low','recommendation'])
