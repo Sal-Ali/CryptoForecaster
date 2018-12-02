@@ -1,8 +1,10 @@
 import coin
 
+'''Encapsulates the portfolio class and its related actions, 
+    lergely self-explanatory in function'''
+    
 class portfolio:
-        def __init__(self, CoinName):
-            self.coinName = CoinName
+        def __init__(self):
             self.valuation = float(100,000)
             self.coinPurse = float(0)
         
@@ -29,11 +31,14 @@ class portfolio:
             else:
                 self.valuation += price
                 self.coinPurse -= 1
-        
+
+        ''' This isn't used in the code ready, but can be called in the driver function
+            to get values - profit will be represented using matplotlib as a 
+            time-series over time '''
+            
         def get_portfolio_value(self):
-            return self.valuation + coin.get_coin_price() * self.coinPurse
-        ''' track portfolio value over time in main class, then plt '''
-        ''' create algorithmic now '''
+            print( self.valuation + float(coin.get_coin_price()) * self.coinPurse)
+
                 
                 
         

@@ -36,19 +36,19 @@ def create_table(query):
 ''' inserts into selected coin, to avoid sql injection '''
 ''' (good practice I guess even though db is local) query is repeated'''
 ''' instead of manipulated by string ''' 
-def insert_utility(coin, date, price, arima, rsi, high, low ):
+def insert_utility(coin, date, price, arima, rsi, high, low, recommendation):
     conn = create_connection(db)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
     c = conn.cursor()
     if coin == 'btc':
-        c.execute('''INSERT INTO btc(date, price, arima, rsi, high, low)
-        VALUES(:date, :price, :arima, :rsi, :high, :low)''',
+        c.execute('''INSERT INTO btc(date, price, arima, rsi, high, low, recommendation)
+        VALUES(:date, :price, :arima, :rsi, :high, :low, :recommendation)''',
         {'date':date, 'price':price, 'arima':arima, 'rsi':rsi,
-         'high':high,'low':low})
+         'high':high,'low':low, 'recommendation':recommendation})
     if coin == 'eth':
-        c.execute('''INSERT INTO eth(date, price, arima, rsi, high, low)
-        VALUES(:date, :price, :arima, :rsi, :high, :low)''',
+        c.execute('''INSERT INTO eth(date, price, arima, rsi, high, low, recommendation)
+        VALUES(:date, :price, :arima, :rsi, :high, :low, :recommendation)''',
         {'date':date, 'price':price, 'arima':arima, 'rsi':rsi,
-         'high':high,'low':low})
+         'high':high,'low':low, 'recommendation':recommendation})
     if coin == 'tron':
         c.execute('''INSERT INTO tron(date, price, arima, rsi, high, low)
         VALUES(:date, :price, :arima, :rsi, :high, :low)''',
@@ -66,6 +66,18 @@ def insert_utility(coin, date, price, arima, rsi, high, low ):
          'high':high,'low':low})
     conn.commit()
     conn.close()
+    
+def retrieve(coin):
+    conn = create_connection(db)
+    c = conn.cursor()
+    if coin == 'btc':
+        c.execute('''SELECT * from btc''')
+    if coin == 'eth':
+        c.execute('''SELECT * from eth''')
+    conn.commit()
+    result = c.fetchall()
+    conn.close()
+    return result 
 
 
 
