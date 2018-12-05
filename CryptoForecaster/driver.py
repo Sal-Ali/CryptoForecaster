@@ -30,6 +30,6 @@ while True:
         count += 0.5
         if count % n == 0:
             c.portfolio.get_portfolio_value()
-            for n in coins:
+            for s in coins:
                 dm.incremental_training(cpdb.retrieve(n))
                 
