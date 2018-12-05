@@ -19,52 +19,52 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
 
 ''' Initial data gathered from gemini (free) '''
-#c = coin('train')
-#btc_file_path = Path("D:/btc.csv")
-#eth_file_path = Path("D:/eth.csv")
-#
-#btc_dat = pd.read_csv(btc_file_path)
-#eth_dat = pd.read_csv(eth_file_path)
-#
-#btc_dat = btc_dat.head(100000)
-#eth_dat = eth_dat.head(100000)
-#
-#btc_prices = btc_dat.Open
-#eth_prices = eth_dat.Open
-#
-#
-#btc_features = []
-#eth_features = []
-#btc_labels = []
-#eth_labels = []
-#
-## price, arima, rsi, high, low | label
-#def features(prices, dataset, labels, features):
-#    count = 0
-#    while count != 99900:
-#        prices_h = []
-#        for i in range(100):
-#            prices_h.append(prices[count+ i])
-#            count += 1
-#        stats = c.feature_maker_train(prices_h)
-#        features.append(stats)
-#        if dataset.Close[count] <= stats[0]:
-#            labels.append(1) # buy
-#        else:
-#            labels.append(2) # sell
-#        
-#features(btc_prices, btc_dat, btc_labels, btc_features)
-#features(eth_prices, eth_dat, eth_labels, eth_features)
-#
-#label_1 = pickle.dumps(btc_labels)
-#label_2 = pickle.dumps(eth_labels)
-#
-#
-#btc_f = pd.DataFrame(btc_features, columns=['price','arima','rsi','high','low'])
-#eth_f = pd.DataFrame(eth_features, columns=['price','arima','rsi','high','low'])
-#
-#btc_features = pickle.dumps(btc_f)
-#eth_features = pickle.dumps(eth_f)
+c = coin('train')
+btc_file_path = Path("D:/btc.csv")
+eth_file_path = Path("D:/eth.csv")
+
+btc_dat = pd.read_csv(btc_file_path)
+eth_dat = pd.read_csv(eth_file_path)
+
+btc_dat = btc_dat.head(100000)
+eth_dat = eth_dat.head(100000)
+
+btc_prices = btc_dat.Open
+eth_prices = eth_dat.Open
+
+
+btc_features = []
+eth_features = []
+btc_labels = []
+eth_labels = []
+
+ # price, arima, rsi, high, low | label
+def features(prices, dataset, labels, features):
+    count = 0
+    while count != 99900:
+        prices_h = []
+        for i in range(100):
+            prices_h.append(prices[count+ i])
+            count += 1
+        stats = c.feature_maker_train(prices_h)
+        features.append(stats)
+        if dataset.Close[count] <= stats[0]:
+            labels.append(1) # buy
+        else:
+            labels.append(2) # sell
+        
+features(btc_prices, btc_dat, btc_labels, btc_features)
+features(eth_prices, eth_dat, eth_labels, eth_features)
+
+label_1 = pickle.dumps(btc_labels)
+label_2 = pickle.dumps(eth_labels)
+
+
+btc_f = pd.DataFrame(btc_features, columns=['price','arima','rsi','high','low'])
+eth_f = pd.DataFrame(eth_features, columns=['price','arima','rsi','high','low'])
+
+btc_features = pickle.dumps(btc_f)
+eth_features = pickle.dumps(eth_f)
 ''' pickle split here to reduce repetitiveness ''' 
 
 import warnings
@@ -88,16 +88,16 @@ eth_y = eth_l
 eth_X = eth_f
 train_X1, test_X1, train_y1, test_y1 = train_test_split(eth_X.as_matrix(), eth_y.as_matrix(), test_size=0.01)
 ''' first attempt at model training '''
-#btc_model = XGBClassifier(silent=True)
-#btc_model.fit(train_X, train_y, verbose=False)
-#btc_pred = btc_model.predict(test_X)
-#
-#eth_model = XGBClassifier(silent=True)
-#eth_model.fit(train_X1, train_y1, verbose=False)
-#eth_pred = eth_model.predict(test_X1)
+btc_model = XGBClassifier(silent=True)
+btc_model.fit(train_X, train_y, verbose=False)
+btc_pred = btc_model.predict(test_X)
 
-#print(" btc  Error : " + str(zero_one_loss(btc_pred, test_y)))
-#print(" eth Error : " + str(zero_one_loss(eth_pred, test_y1)))
+eth_model = XGBClassifier(silent=True)
+eth_model.fit(train_X1, train_y1, verbose=False)
+eth_pred = eth_model.predict(test_X1)
+
+print(" btc  Error : " + str(zero_one_loss(btc_pred, test_y)))
+print(" eth Error : " + str(zero_one_loss(eth_pred, test_y1)))
 
 ''' initial accuracy is 68% and 55% ... not the best, my attempt at tuning '''
 
@@ -120,17 +120,17 @@ fit_params_eth = {"xgb_c__eval_set": [(test_X1, test_y1)],
               "xgb_c__eval_metric": 'error', 
               "xgb_c__verbose": False}
 
-#searchCV_btc = GridSearchCV(btc_pipeline, cv=5,
-#                            param_grid=param_grid, fit_params=fit_params_btc)
-#
-#searchCV_eth = GridSearchCV(eth_pipeline, cv=5,
-#                        param_grid=param_grid, fit_params=fit_params_eth)
-#
-#searchCV_btc.fit(train_X, train_y)  
-#searchCV_eth.fit(train_X1, train_y1)  
-#
-#print(searchCV_btc.best_params_)
-#print(searchCV_eth.best_params_)
+searchCV_btc = GridSearchCV(btc_pipeline, cv=5,
+                            param_grid=param_grid, fit_params=fit_params_btc)
+
+searchCV_eth = GridSearchCV(eth_pipeline, cv=5,
+                        param_grid=param_grid, fit_params=fit_params_eth)
+
+searchCV_btc.fit(train_X, train_y)  
+searchCV_eth.fit(train_X1, train_y1)  
+
+print(searchCV_btc.best_params_)
+print(searchCV_eth.best_params_)
 
 '''
 Results,
@@ -145,17 +145,17 @@ param_grid_2 = {
     "xgb_c__early_stopping_rounds": [2, 3 ,4],
 }
 
-#searchCV_btc = GridSearchCV(btc_pipeline, cv=5,
-#                            param_grid=param_grid_2, fit_params=fit_params_btc)
-#
-#searchCV_eth = GridSearchCV(eth_pipeline, cv=5,
-#                        param_grid=param_grid_2, fit_params=fit_params_eth)
-#
-#searchCV_btc.fit(train_X, train_y)  
-#searchCV_eth.fit(train_X1, train_y1)  
-#
-#print(searchCV_btc.best_params_)
-#print(searchCV_eth.best_params_)
+searchCV_btc = GridSearchCV(btc_pipeline, cv=5,
+                            param_grid=param_grid_2, fit_params=fit_params_btc)
+
+searchCV_eth = GridSearchCV(eth_pipeline, cv=5,
+                        param_grid=param_grid_2, fit_params=fit_params_eth)
+
+searchCV_btc.fit(train_X, train_y)  
+searchCV_eth.fit(train_X1, train_y1)  
+
+print(searchCV_btc.best_params_)
+print(searchCV_eth.best_params_)
 
 ''' Little surprised here... 
 {'xgb_c__early_stopping_rounds': 2, 'xgb_c__learning_rate': 0.05, 'xgb_c__n_estimators': 750}
@@ -183,4 +183,4 @@ btc_model.save_model('btc_model.model')
 eth_model.save_model('eth_model.model')
 btc_model.save_model('btc_model.bin')
 eth_model.save_model('eth_model.bin')
-# Have to be safe
+# Have to be safe, saved two copies
